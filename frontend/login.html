@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Staff Hub</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .login-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .login-title {
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .login-subtitle {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .alert-error {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: var(--danger);
+        }
+        
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-header">
+            <div class="login-icon">👥</div>
+            <h1 class="login-title">Staff Hub</h1>
+            <p class="login-subtitle">Sign in to your account</p>
+        </div>
+
+        <div class="alert alert-error" id="errorAlert"></div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="loginBtn">
+                <span id="btnText">Sign In</span>
+                <div class="loading-spinner" id="loadingSpinner"></div>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080/api';
+        
+        // DOM Elements
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const btnText = document.getElementById('btnText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const errorAlert = document.getElementById('errorAlert');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+
+        // Show loading state
+        function setLoading(loading) {
+            if (loading) {
+                btnText.style.display = 'none';
+                loadingSpinner.style.display = 'block';
+                loginBtn.disabled = true;
+            } else {
+                btnText.style.display = 'block';
+                loadingSpinner.style.display = 'none';
+                loginBtn.disabled = false;
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            errorAlert.textContent = message;
+            errorAlert.style.display = 'block';
+        }
+
+        // Redirect to appropriate dashboard based on role
+        function redirectToDashboard(role) {
+            console.log('Redirecting based on role:', role);
+            
+            let redirectUrl = '';
+            switch(role) {
+                case 'ADMIN':
+                    redirectUrl = 'admin-dashboard.html';
+                    break;
+                case 'HR_MANAGER':
+                    redirectUrl = 'hr-dashboard.html';
+                    break;
+                case 'DEPT_MANAGER':
+                    redirectUrl = 'manager-dashboard.html';
+                    break;
+                case 'STAFF':
+                    redirectUrl = 'staff-dashboard.html';
+                    break;
+                default:
+                    redirectUrl = 'dashboard.html';
+            }
+            
+            console.log('Redirecting to:', redirectUrl);
+            window.location.href = redirectUrl;
+        }
+
+        // Handle login form submission - FIXED VERSION
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!email || !password) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            setLoading(true);
+            showError(''); // Clear previous errors
+
+            try {
+                console.log('Attempting login with:', email);
+                
+                const response = await fetch(`${API_BASE_URL}/users/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        email: email, 
+                        password: password 
+                    })
+                });
+
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    // If response is not OK, try to get error message
+                    let errorMessage = `HTTP error! status: ${response.status}`;
+                    try {
+                        const errorResult = await response.json();
+                        errorMessage = errorResult.message || errorMessage;
+                    } catch (e) {
+                        // If we can't parse JSON, use status text
+                        errorMessage = response.statusText || errorMessage;
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                const result = await response.json();
+                console.log('Login response:', result);
+
+                if (result.success) {
+                    const user = result.user;
+                    const passwordChangeRequired = result.passwordChangeRequired;
+                    
+                    console.log('Login successful for user:', user.email, 'Role:', user.role, 'Password change required:', passwordChangeRequired);
+                    
+                    // Check if password change is required (for non-admin users)
+                    if (passwordChangeRequired && user.role !== 'ADMIN') {
+                        console.log('Password change required, redirecting to change password...');
+                        // Store user temporarily and redirect to password change
+                        localStorage.setItem('tempUser', JSON.stringify(user));
+                        window.location.href = 'change-password.html';
+                    } else {
+                        console.log('No password change required, storing user and redirecting to dashboard...');
+                        // Store user in localStorage and redirect to dashboard
+                        localStorage.setItem('user', JSON.stringify(user));
+                        localStorage.setItem('token', 'auth-token');
+                        
+                        // Redirect to appropriate dashboard
+                        redirectToDashboard(user.role);
+                    }
+                } else {
+                    console.log('Login failed with message:', result.message);
+                    showError(result.message || 'Invalid email or password');
+                    setLoading(false);
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                
+                // More specific error messages
+                if (error.message.includes('Failed to fetch') || error.message.includes('Network')) {
+                    showError('Cannot connect to server. Please check if the backend is running on localhost:8080');
+                } else if (error.message.includes('500') || error.message.includes('Internal Server Error')) {
+                    showError('Server error. Please check the backend logs.');
+                } else {
+                    showError(error.message || 'Login failed. Please try again.');
+                }
+                setLoading(false);
+            }
+        });
+
+        // Clear error when user starts typing
+        emailInput.addEventListener('input', () => {
+            errorAlert.style.display = 'none';
+        });
+
+        passwordInput.addEventListener('input', () => {
+            errorAlert.style.display = 'none';
+        });
+
+        // Debug: Check if user is already logged in
+        window.addEventListener('load', () => {
+            const user = localStorage.getItem('user');
+            if (user) {
+                console.log('User already logged in:', JSON.parse(user).email);
+                // Auto-redirect if already logged in
+                const userData = JSON.parse(user);
+                redirectToDashboard(userData.role);
+            }
+            
+            // Check if there's a temp user (password change required)
+            const tempUser = localStorage.getItem('tempUser');
+            if (tempUser) {
+                console.log('Temp user found (password change required):', JSON.parse(tempUser).email);
+                window.location.href = 'change-password.html';
+            }
+        });
+    </script>
+</body>
+</html>

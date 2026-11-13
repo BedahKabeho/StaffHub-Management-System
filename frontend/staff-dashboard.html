@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - Staff Hub</title>
+    <style>
+        /* Your existing CSS remains the same */
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+            --light-gray: #f8f9fa;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .dashboard-header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            font-size: 28px;
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .logo h1 {
+            color: var(--primary);
+            font-size: 24px;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-info {
+            color: var(--secondary);
+        }
+        
+        .user-role-badge {
+            background-color: var(--success);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        .dashboard-container {
+            padding: 30px 0;
+        }
+        
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 30px;
+        }
+        
+        .sidebar {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+        
+        .sidebar-menu li a {
+            display: block;
+            padding: 12px 15px;
+            color: var(--secondary);
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar-menu li a:hover, .sidebar-menu li a.active {
+            background-color: var(--light);
+            color: var(--primary);
+        }
+        
+        .main-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .content-header {
+            margin-bottom: 25px;
+        }
+        
+        .content-header h2 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        
+        .content-header p {
+            color: var(--gray);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stat-icon {
+            font-size: 40px;
+            margin-right: 15px;
+            color: var(--primary);
+        }
+        
+        .stat-info h3 {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+        
+        .announcement-item {
+            background-color: var(--light-gray);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .announcement-header h3 {
+            color: var(--secondary);
+        }
+        
+        .announcement-date {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .announcement-content {
+            color: var(--dark);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .announcement-meta {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .announcement-meta small {
+            color: var(--gray);
+            background: rgba(149, 165, 166, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+        
+        .profile-info {
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            margin-right: 20px;
+        }
+        
+        .profile-details h3 {
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+        
+        .profile-details p {
+            color: var(--gray);
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .info-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--success);
+        }
+        
+        .info-card h4 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        
+        .info-card p {
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        
+        .alert {
+            padding: 12px 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        
+        .alert-success {
+            background-color: rgba(39, 174, 96, 0.1);
+            border: 1px solid rgba(39, 174, 96, 0.3);
+            color: var(--success);
+        }
+        
+        .alert-error {
+            background-color: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: var(--danger);
+        }
+        
+        #alertContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+            max-width: 400px;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .action-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            border: 1px solid #e1e8ed;
+        }
+        
+        .action-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .action-card h4 {
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+        
+        .request-form {
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--secondary);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .requests-list {
+            margin-top: 25px;
+        }
+        
+        .request-item {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .request-title {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        
+        .request-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-approved {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+        
+        .status-rejected {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+        
+        .request-details {
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+        
+        .request-meta {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        
+        .request-meta small {
+            color: var(--gray);
+        }
+        
+        .request-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h2 {
+            color: var(--secondary);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        /* Attendance specific styles */
+        .attendance-container {
+            text-align: center;
+            padding: 30px;
+            background: var(--light-gray);
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .attendance-status {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .attendance-time {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: var(--gray);
+        }
+        
+        .attendance-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .attendance-history {
+            margin-top: 30px;
+        }
+        
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .attendance-table th, .attendance-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e8ed;
+        }
+        
+        .attendance-table th {
+            background-color: var(--light);
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        
+        .attendance-table tr:hover {
+            background-color: rgba(236, 240, 241, 0.5);
+        }
+        
+        .attendance-status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-present {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+        
+        .status-partial {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-absent {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+        
+        .current-time {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 10px;
+        }
+        
+        .network-warning {
+            background-color: rgba(243, 156, 18, 0.1);
+            border: 1px solid rgba(243, 156, 18, 0.3);
+            color: var(--warning);
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-avatar {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .attendance-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body class="dashboard-page">
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🏢</span>
+                    <h1>Staff Hub Management</h1>
+                </div>
+                <div class="user-menu">
+                    <span class="user-info">Welcome, <strong id="userName">Staff</strong></span>
+                    <div class="user-role-badge" id="userRoleBadge">Staff</div>
+                    <button class="btn btn-outline" id="logoutBtn">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <div class="container">
+            <div class="dashboard-content">
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <ul class="sidebar-menu">
+                        <li><a href="#" class="active" data-content="overview">Dashboard Overview</a></li>
+                        <li><a href="#" data-content="attendance">Attendance</a></li>
+                        <li><a href="#" data-content="announcements">Announcements</a></li>
+                        <li><a href="#" data-content="leave">Leave Requests</a></li>
+                        <li><a href="#" data-content="loans">Loan Requests</a></li>
+                        <li><a href="#" data-content="profile">My Profile</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="main-content">
+                    <!-- Overview Section -->
+                    <div id="overview-content" class="content-section active">
+                        <div class="content-header">
+                            <h2>Staff Dashboard</h2>
+                            <p>Welcome to your Staff Hub Dashboard</p>
+                        </div>
+                        
+                        <div class="profile-info">
+                            <div class="profile-header">
+                                <div class="profile-avatar" id="userAvatar">S</div>
+                                <div class="profile-details">
+                                    <h3 id="profileName">Staff Member</h3>
+                                    <p id="profileEmail">staff@company.com</p>
+                                    <p id="profileDepartment">Department: N/A</p>
+                                    <p id="profileEmployeeId">Employee ID: N/A</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quick-actions">
+                            <div class="action-card" onclick="showSection('attendance')">
+                                <div class="action-icon">⏱️</div>
+                                <h4>Attendance</h4>
+                                <p>Clock in/out and view history</p>
+                            </div>
+                            <div class="action-card" onclick="showSection('announcements')">
+                                <div class="action-icon">📢</div>
+                                <h4>Announcements</h4>
+                                <p>View company announcements</p>
+                            </div>
+                            <div class="action-card" onclick="showSection('leave')">
+                                <div class="action-icon">📋</div>
+                                <h4>Leave Requests</h4>
+                                <p>Apply for leave</p>
+                            </div>
+                            <div class="action-card" onclick="showSection('loans')">
+                                <div class="action-icon">💰</div>
+                                <h4>Loan Requests</h4>
+                                <p>Apply for salary advance</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">⏱️</div>
+                                <div class="stat-info">
+                                    <h3>Today's Status</h3>
+                                    <div class="stat-value" id="todayStatus">-</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">📢</div>
+                                <div class="stat-info">
+                                    <h3>Announcements</h3>
+                                    <div class="stat-value" id="announcementsCount">0</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">📋</div>
+                                <div class="stat-info">
+                                    <h3>Leave Balance</h3>
+                                    <div class="stat-value">21</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">💰</div>
+                                <div class="stat-info">
+                                    <h3>Active Loans</h3>
+                                    <div class="stat-value" id="activeLoans">0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Attendance Section -->
+                    <div id="attendance-content" class="content-section">
+                        <div class="content-header">
+                            <h2>Attendance Management</h2>
+                            <p>Clock in/out and view your attendance history</p>
+                        </div>
+                        
+                        <div id="networkWarning" class="network-warning" style="display: none;">
+                            ⚠️ You are not connected to the company network. Attendance features are disabled.
+                        </div>
+                        
+                        <div class="attendance-container">
+                            <div class="attendance-status" id="currentAttendanceStatus">
+                                Loading your attendance status...
+                            </div>
+                            <div class="attendance-time" id="attendanceTimes">
+                                <!-- Clock in/out times will be displayed here -->
+                            </div>
+                            <div class="attendance-actions">
+                                <button class="btn btn-success" id="clockInBtn" onclick="clockIn()">Clock In</button>
+                                <button class="btn btn-warning" id="clockOutBtn" onclick="clockOut()">Clock Out</button>
+                            </div>
+                            <div class="current-time" id="currentTime">
+                                Current time: Loading...
+                            </div>
+                        </div>
+                        
+                        <div class="attendance-history">
+                            <h3>Attendance History</h3>
+                            <div class="table-container">
+                                <table class="attendance-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Clock In</th>
+                                            <th>Clock Out</th>
+                                            <th>Status</th>
+                                            <th>IP Address</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="attendanceHistoryBody">
+                                        <!-- Attendance history will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Announcements Section -->
+                    <div id="announcements-content" class="content-section">
+                        <div class="content-header">
+                            <h2>Company Announcements</h2>
+                            <p>Stay updated with the latest company news and updates</p>
+                        </div>
+                        
+                        <div class="announcements-list" id="announcementsList">
+                            <div class="empty-state">
+                                <p>Loading announcements...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Leave Requests Section -->
+                    <div id="leave-content" class="content-section">
+                        <div class="content-header">
+                            <h2>Leave Requests</h2>
+                            <p>Manage your leave applications</p>
+                        </div>
+                        
+                        <div class="request-form">
+                            <h3>Apply for Leave</h3>
+                            <form id="leaveRequestForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="leaveType">Leave Type</label>
+                                        <select id="leaveType" class="form-control" required>
+                                            <option value="">Select Leave Type</option>
+                                            <option value="SICK">Sick Leave</option>
+                                            <option value="ANNUAL">Annual Leave</option>
+                                            <option value="EMERGENCY">Emergency Leave</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="totalDays">Number of Days</label>
+                                        <input type="number" id="totalDays" class="form-control" min="1" max="30" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="startDate">Start Date</label>
+                                        <input type="date" id="startDate" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="endDate">End Date</label>
+                                        <input type="date" id="endDate" class="form-control" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="leaveReason">Reason for Leave</label>
+                                    <textarea id="leaveReason" class="form-control" placeholder="Please provide a reason..." required></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Submit Leave Request</button>
+                            </form>
+                        </div>
+                        
+                        <div class="requests-list">
+                            <h3>My Leave Requests</h3>
+                            <div id="leaveRequestsList">
+                                <div class="empty-state">
+                                    <p>No leave requests yet</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Loan Requests Section -->
+                    <div id="loans-content" class="content-section">
+                        <div class="content-header">
+                            <h2>Loan Requests</h2>
+                            <p>Apply for salary advance loans</p>
+                        </div>
+                        
+                        <div class="request-form">
+                            <h3>Apply for Loan</h3>
+                            <form id="loanRequestForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="loanAmount">Loan Amount</label>
+                                        <input type="number" id="loanAmount" class="form-control" min="100" max="5000" placeholder="Enter amount" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="repaymentPeriod">Repayment Period (Months)</label>
+                                        <input type="number" id="repaymentPeriod" class="form-control" min="3" max="24" placeholder="Enter months" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="loanPurpose">Purpose of Loan</label>
+                                    <textarea id="loanPurpose" class="form-control" placeholder="Please describe the purpose..." required></textarea>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Submit Loan Request</button>
+                            </form>
+                        </div>
+                        
+                        <div class="requests-list">
+                            <h3>My Loan Requests</h3>
+                            <div id="loanRequestsList">
+                                <div class="empty-state">
+                                    <p>No loan requests yet</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Profile Section -->
+                    <div id="profile-content" class="content-section">
+                        <div class="content-header">
+                            <h2>My Profile</h2>
+                            <p>View and manage your personal information</p>
+                        </div>
+                        
+                        <div class="profile-info">
+                            <div class="profile-header">
+                                <div class="profile-avatar" id="profileAvatar">S</div>
+                                <div class="profile-details">
+                                    <h3 id="profileFullName">Staff Member</h3>
+                                    <p id="profileEmailFull">staff@company.com</p>
+                                    <p id="profileRole">Role: Staff</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-grid">
+                                <div class="info-card">
+                                    <h4>Personal Information</h4>
+                                    <p><strong>Employee ID:</strong> <span id="profileEmpId">N/A</span></p>
+                                    <p><strong>Department:</strong> <span id="profileDept">N/A</span></p>
+                                    <p><strong>Manager:</strong> <span id="profileManager">N/A</span></p>
+                                    <p><strong>Hire Date:</strong> <span id="profileHireDate">N/A</span></p>
+                                </div>
+                                
+                                <div class="info-card">
+                                    <h4>Contact Information</h4>
+                                    <p><strong>Phone:</strong> <span id="profilePhone">N/A</span></p>
+                                    <p><strong>Email:</strong> <span id="profileContactEmail">N/A</span></p>
+                                    <p><strong>Address:</strong> <span id="profileAddress">N/A</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirm Deletion</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this request?</p>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn btn-outline" id="cancelDelete">Cancel</button>
+                    <button class="btn btn-danger" id="confirmDelete">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Container -->
+    <div id="alertContainer"></div>
+<script>
+    // API Configuration
+    const API_BASE_URL = 'http://localhost:8080/api';
+    
+    // Global variables
+    let userData = null;
+    let announcements = [];
+    let leaveRequests = [];
+    let loanRequests = [];
+    let attendanceRecords = [];
+    let currentDeleteId = null;
+    let currentDeleteType = null;
+    let todayAttendance = null;
+    let isInCompanyNetwork = false;
+    
+    // Initialize dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+        userData = JSON.parse(localStorage.getItem('user'));
+        if (!userData) {
+            window.location.href = 'login.html';
+            return;
+        }
+
+        initializeUserData();
+        checkNetworkConnection(); // Check network first
+        loadAnnouncements();
+        loadLeaveRequests();
+        loadLoanRequests();
+        loadAttendanceHistory();
+        checkTodayAttendance();
+        setupEventListeners();
+        setupFormDefaults();
+        
+        // Update current time every second
+        updateCurrentTime();
+        setInterval(updateCurrentTime, 1000);
+    });
+
+    function initializeUserData() {
+        document.getElementById('userName').textContent = userData.firstName + ' ' + userData.lastName;
+        document.getElementById('userRoleBadge').textContent = userData.role;
+        
+        document.getElementById('profileName').textContent = userData.firstName + ' ' + userData.lastName;
+        document.getElementById('profileEmail').textContent = userData.email;
+        document.getElementById('profileDepartment').textContent = 'Department: ' + (userData.department ? userData.department.departmentName : 'N/A');
+        document.getElementById('profileEmployeeId').textContent = 'Employee ID: ' + (userData.employeeId || 'N/A');
+        
+        const avatar = document.getElementById('userAvatar');
+        const profileAvatar = document.getElementById('profileAvatar');
+        const initials = (userData.firstName.charAt(0) + userData.lastName.charAt(0)).toUpperCase();
+        avatar.textContent = initials;
+        profileAvatar.textContent = initials;
+        
+        document.getElementById('profileFullName').textContent = userData.firstName + ' ' + userData.lastName;
+        document.getElementById('profileEmailFull').textContent = userData.email;
+        document.getElementById('profileRole').textContent = 'Role: ' + userData.role;
+        document.getElementById('profileEmpId').textContent = userData.employeeId || 'N/A';
+        document.getElementById('profileDept').textContent = userData.department ? userData.department.departmentName : 'N/A';
+        document.getElementById('profileManager').textContent = userData.manager ? userData.manager.firstName + ' ' + userData.manager.lastName : 'N/A';
+        document.getElementById('profileHireDate').textContent = userData.hireDate ? new Date(userData.hireDate).toLocaleDateString() : 'N/A';
+        document.getElementById('profilePhone').textContent = userData.phoneNumber || 'N/A';
+        document.getElementById('profileContactEmail').textContent = userData.email;
+        document.getElementById('profileAddress').textContent = userData.address || 'N/A';
+    }
+
+    function setupEventListeners() {
+        document.getElementById('logoutBtn').addEventListener('click', logout);
+        
+        document.querySelectorAll('.sidebar-menu a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                showSection(this.getAttribute('data-content'));
+            });
+        });
+
+        document.getElementById('leaveRequestForm').addEventListener('submit', handleLeaveRequestSubmit);
+        document.getElementById('loanRequestForm').addEventListener('submit', handleLoanRequestSubmit);
+
+        document.querySelectorAll('.close-modal').forEach(button => {
+            button.addEventListener('click', function() {
+                document.getElementById('deleteModal').style.display = 'none';
+            });
+        });
+
+        document.getElementById('cancelDelete').addEventListener('click', function() {
+            document.getElementById('deleteModal').style.display = 'none';
+        });
+
+        document.getElementById('confirmDelete').addEventListener('click', confirmDelete);
+
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+
+        // Auto-calculate days when dates change
+        document.getElementById('startDate').addEventListener('change', calculateLeaveDays);
+        document.getElementById('endDate').addEventListener('change', calculateLeaveDays);
+    }
+
+    function setupFormDefaults() {
+        const today = new Date();
+        const nextWeek = new Date(today);
+        nextWeek.setDate(today.getDate() + 7);
+        
+        document.getElementById('startDate').valueAsDate = nextWeek;
+        document.getElementById('endDate').valueAsDate = nextWeek;
+        calculateLeaveDays();
+    }
+
+    function calculateLeaveDays() {
+        const startDate = new Date(document.getElementById('startDate').value);
+        const endDate = new Date(document.getElementById('endDate').value);
+        
+        if (startDate && endDate && endDate >= startDate) {
+            const timeDiff = endDate.getTime() - startDate.getTime();
+            const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+            document.getElementById('totalDays').value = dayDiff;
+        }
+    }
+
+    function showSection(sectionName) {
+        document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+        document.querySelector(`[data-content="${sectionName}"]`).classList.add('active');
+        
+        document.querySelectorAll('.content-section').forEach(section => {
+            section.classList.remove('active');
+        });
+        document.getElementById(sectionName + '-content').classList.add('active');
+        
+        // Refresh data when switching to specific sections
+        if (sectionName === 'attendance') {
+            loadAttendanceHistory();
+            checkTodayAttendance();
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        window.location.href = 'login.html';
+    }
+
+    // Network Validation Functions - FIXED VERSION
+    async function checkNetworkConnection() {
+        try {
+            // Test network by calling can-clock-in endpoint
+            const response = await fetch(`${API_BASE_URL}/attendance/can-clock-in?userId=${userData.id}`);
+            
+            if (response.ok) {
+                const canClockIn = await response.json();
+                isInCompanyNetwork = true;
+            } else {
+                // If we get an error, user is not on company network
+                isInCompanyNetwork = false;
+            }
+        } catch (error) {
+            console.error('Error checking network:', error);
+            isInCompanyNetwork = false;
+        }
+        
+        // Update UI based on network status
+        updateNetworkUI();
+    }
+
+    function updateNetworkUI() {
+        const networkWarning = document.getElementById('networkWarning');
+        const clockInBtn = document.getElementById('clockInBtn');
+        const clockOutBtn = document.getElementById('clockOutBtn');
+        
+        if (!isInCompanyNetwork) {
+            networkWarning.style.display = 'block';
+            networkWarning.innerHTML = '⚠️ You are not connected to the company network (192.168.100.xxx). Attendance features are disabled.';
+            clockInBtn.disabled = true;
+            clockOutBtn.disabled = true;
+            clockInBtn.title = 'Connect to company network to clock in';
+            clockOutBtn.title = 'Connect to company network to clock out';
+        } else {
+            networkWarning.style.display = 'none';
+            // Button states will be updated by updateAttendanceUI()
+        }
+        
+        // Update attendance UI to reflect network status
+        updateAttendanceUI();
+    }
+
+    // Simple IP function that returns a valid company IP
+    async function getUserIP() {
+        // This will be the actual IP that Spring Boot detects from the request
+        // We don't need to generate it - Spring Boot gets it from the HTTP request
+        return ''; // Empty is fine, Spring Boot will get the real IP
+    }
+
+    // Attendance Functions
+    async function checkTodayAttendance() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/attendance/today?userId=${userData.id}`);
+            
+            if (response.ok) {
+                todayAttendance = await response.json();
+                updateAttendanceUI();
+            } else if (response.status === 404) {
+                todayAttendance = null;
+                updateAttendanceUI();
+            } else {
+                // If we get access denied, user is not on company network
+                const errorText = await response.text();
+                if (errorText.includes('Access denied')) {
+                    isInCompanyNetwork = false;
+                    updateNetworkUI();
+                }
+                throw new Error('Failed to fetch today attendance');
+            }
+        } catch (error) {
+            console.error('Error checking today attendance:', error);
+            todayAttendance = null;
+            updateAttendanceUI();
+        }
+    }
+
+    function updateAttendanceUI() {
+        const statusElement = document.getElementById('currentAttendanceStatus');
+        const timesElement = document.getElementById('attendanceTimes');
+        const clockInBtn = document.getElementById('clockInBtn');
+        const clockOutBtn = document.getElementById('clockOutBtn');
+        const todayStatusElement = document.getElementById('todayStatus');
+        
+        if (!isInCompanyNetwork) {
+            // User is not on company network
+            statusElement.textContent = "Connect to company network to access attendance";
+            statusElement.style.color = 'var(--danger)';
+            timesElement.innerHTML = '';
+            clockInBtn.disabled = true;
+            clockOutBtn.disabled = true;
+            todayStatusElement.textContent = "Off Network";
+            todayStatusElement.style.color = 'var(--danger)';
+        } else if (!todayAttendance) {
+            // On network but haven't clocked in
+            statusElement.textContent = "You haven't clocked in today";
+            statusElement.style.color = 'var(--warning)';
+            timesElement.innerHTML = '';
+            clockInBtn.disabled = false;
+            clockOutBtn.disabled = true;
+            todayStatusElement.textContent = "Not Clocked In";
+            todayStatusElement.style.color = 'var(--warning)';
+        } else if (todayAttendance.clockOutTIme) {
+            // Already completed attendance
+            const clockInTime = new Date(todayAttendance.clockInTIme).toLocaleTimeString();
+            const clockOutTime = new Date(todayAttendance.clockOutTIme).toLocaleTimeString();
+            
+            statusElement.textContent = "You have completed today's attendance";
+            statusElement.style.color = 'var(--success)';
+            timesElement.innerHTML = `
+                <p>Clock In: ${clockInTime}</p>
+                <p>Clock Out: ${clockOutTime}</p>
+            `;
+            clockInBtn.disabled = true;
+            clockOutBtn.disabled = true;
+            todayStatusElement.textContent = "Completed";
+            todayStatusElement.style.color = 'var(--success)';
+        } else {
+            // Clocked in but not out yet
+            const clockInTime = new Date(todayAttendance.clockInTIme).toLocaleTimeString();
+            
+            statusElement.textContent = "You are currently clocked in";
+            statusElement.style.color = 'var(--warning)';
+            timesElement.innerHTML = `
+                <p>Clock In: ${clockInTime}</p>
+                <p>Clock Out: Not yet clocked out</p>
+            `;
+            clockInBtn.disabled = true;
+            clockOutBtn.disabled = false;
+            todayStatusElement.textContent = "Clocked In";
+            todayStatusElement.style.color = 'var(--warning)';
+        }
+    }
+
+    async function clockIn() {
+        if (!isInCompanyNetwork) {
+            showAlert('You must be connected to the company network (192.168.100.xxx) to clock in', 'error');
+            return;
+        }
+        
+        try {
+            const response = await fetch(`${API_BASE_URL}/attendance/clock-in?userId=${userData.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (!response.ok) {
+                let errorMessage = await response.text();
+                throw new Error(errorMessage);
+            }
+
+            let result = await response.text();
+            showAlert(result || 'Clocked in successfully!', 'success');
+            await checkTodayAttendance();
+            await loadAttendanceHistory();
+        } catch (error) {
+            console.error('Error clocking in:', error);
+            showAlert('Error: ' + error.message, 'error');
+        }
+    }
+
+    async function clockOut() {
+        if (!isInCompanyNetwork) {
+            showAlert('You must be connected to the company network (192.168.100.xxx) to clock out', 'error');
+            return;
+        }
+        
+        try {
+            const response = await fetch(`${API_BASE_URL}/attendance/clock-out?userId=${userData.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (!response.ok) {
+                let errorMessage = await response.text();
+                throw new Error(errorMessage);
+            }
+
+            let result = await response.text();
+            showAlert(result || 'Clocked out successfully!', 'success');
+            await checkTodayAttendance();
+            await loadAttendanceHistory();
+        } catch (error) {
+            console.error('Error clocking out:', error);
+            showAlert('Error: ' + error.message, 'error');
+        }
+    }
+
+    async function loadAttendanceHistory() {
+        try {
+            // Get attendance for the last 30 days
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setDate(endDate.getDate() - 30);
+            
+            const startDateStr = startDate.toISOString().split('T')[0];
+            const endDateStr = endDate.toISOString().split('T')[0];
+            
+            const response = await fetch(`${API_BASE_URL}/attendance/history?userId=${userData.id}&startDate=${startDateStr}&endDate=${endDateStr}`);
+            
+            if (response.ok) {
+                attendanceRecords = await response.json();
+                displayAttendanceHistory();
+            } else {
+                attendanceRecords = [];
+                displayAttendanceHistory();
+            }
+        } catch (error) {
+            console.error('Error loading attendance history:', error);
+            attendanceRecords = [];
+            displayAttendanceHistory();
+        }
+    }
+
+    function displayAttendanceHistory() {
+        const container = document.getElementById('attendanceHistoryBody');
+        
+        if (!attendanceRecords || attendanceRecords.length === 0) {
+            container.innerHTML = '<tr><td colspan="5" style="text-align: center;">No attendance records found</td></tr>';
+            return;
+        }
+        
+        // Sort by date (newest first)
+        const sortedRecords = attendanceRecords.sort((a, b) => 
+            new Date(b.attendanceDate) - new Date(a.attendanceDate)
+        );
+        
+        container.innerHTML = sortedRecords.map(record => {
+            const clockInTime = record.clockInTIme ? new Date(record.clockInTIme).toLocaleTimeString() : '-';
+            const clockOutTime = record.clockOutTIme ? new Date(record.clockOutTIme).toLocaleTimeString() : '-';
+            
+            // Determine status
+            let status = 'Absent';
+            let statusClass = 'status-absent';
+            
+            if (record.clockInTIme && record.clockOutTIme) {
+                status = 'Present';
+                statusClass = 'status-present';
+            } else if (record.clockInTIme && !record.clockOutTIme) {
+                status = 'Partial';
+                statusClass = 'status-partial';
+            }
+            
+            return `
+                <tr>
+                    <td>${new Date(record.attendanceDate).toLocaleDateString()}</td>
+                    <td>${clockInTime}</td>
+                    <td>${clockOutTime}</td>
+                    <td><span class="attendance-status-badge ${statusClass}">${status}</span></td>
+                    <td>${record.ipAddress || 'N/A'}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function updateCurrentTime() {
+        const now = new Date();
+        document.getElementById('currentTime').textContent = 
+            `Current time: ${now.toLocaleTimeString()}`;
+    }
+
+    async function loadAnnouncements() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/announcement`);
+            if (!response.ok) throw new Error('Failed to fetch announcements');
+            
+            announcements = await response.json();
+            
+            // Filter active announcements and sort by date
+            const activeAnnouncements = announcements
+                .filter(announcement => announcement.isActive)
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            displayAnnouncements(activeAnnouncements);
+            document.getElementById('announcementsCount').textContent = activeAnnouncements.length;
+            
+        } catch (error) {
+            console.error('Error loading announcements:', error);
+            document.getElementById('announcementsList').innerHTML = '<div class="empty-state"><p>Error loading announcements</p></div>';
+        }
+    }
+
+    function displayAnnouncements(announcements) {
+        const container = document.getElementById('announcementsList');
+        
+        if (announcements.length === 0) {
+            container.innerHTML = '<div class="empty-state"><p>No announcements found</p></div>';
+            return;
+        }
+        
+        container.innerHTML = announcements.map(announcement => `
+            <div class="announcement-item">
+                <div class="announcement-header">
+                    <h3>${announcement.title || 'No Title'}</h3>
+                    <span class="announcement-date">${new Date(announcement.createdAt).toLocaleDateString()}</span>
+                </div>
+                <div class="announcement-content">
+                    ${announcement.content || 'No content available.'}
+                </div>
+                <div class="announcement-meta">
+                    <small><strong>Posted by:</strong> ${announcement.postedBy ? announcement.postedBy.firstName + ' ' + announcement.postedBy.lastName : 'Administration'}</small>
+                    ${announcement.department ? `<small><strong>Department:</strong> ${announcement.department.departmentName}</small>` : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function loadLeaveRequests() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/leaveRequest`);
+            if (!response.ok) throw new Error('Failed to fetch leave requests');
+            
+            const allRequests = await response.json();
+            
+            // Filter requests for current user
+            leaveRequests = allRequests.filter(request => 
+                request.user && request.user.id === userData.id
+            );
+            
+            displayLeaveRequests(leaveRequests);
+            updateStats();
+        } catch (error) {
+            console.error('Error loading leave requests:', error);
+            showAlert('Error loading leave requests', 'error');
+        }
+    }
+
+    function displayLeaveRequests(requests) {
+        const container = document.getElementById('leaveRequestsList');
+        
+        if (requests.length === 0) {
+            container.innerHTML = '<div class="empty-state"><p>No leave requests yet</p></div>';
+            return;
+        }
+        
+        const sortedRequests = requests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+        container.innerHTML = sortedRequests.map(request => `
+            <div class="request-item">
+                <div class="request-header">
+                    <div class="request-title">${request.leaveType} Leave - ${request.totalDays} day(s)</div>
+                    <div class="request-status status-${request.status.toLowerCase()}">${request.status}</div>
+                </div>
+                <div class="request-details">${request.reason}</div>
+                <div class="request-meta">
+                    <small><strong>From:</strong> ${new Date(request.startDate).toLocaleDateString()}</small>
+                    <small><strong>To:</strong> ${new Date(request.endDate).toLocaleDateString()}</small>
+                    <small><strong>Submitted:</strong> ${new Date(request.createdAt).toLocaleDateString()}</small>
+                </div>
+                ${request.status === 'PENDING' ? `
+                <div class="request-actions">
+                    <button class="btn btn-danger btn-sm" onclick="deleteRequest('leave', ${request.id})">Delete</button>
+                </div>
+                ` : ''}
+            </div>
+        `).join('');
+    }
+
+    async function loadLoanRequests() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/loanRequest`);
+            if (!response.ok) throw new Error('Failed to fetch loan requests');
+            
+            const allRequests = await response.json();
+            
+            // Filter requests for current user
+            loanRequests = allRequests.filter(request => 
+                request.user && request.user.id === userData.id
+            );
+            
+            displayLoanRequests(loanRequests);
+            updateStats();
+        } catch (error) {
+            console.error('Error loading loan requests:', error);
+            showAlert('Error loading loan requests', 'error');
+        }
+    }
+
+    function displayLoanRequests(requests) {
+        const container = document.getElementById('loanRequestsList');
+        
+        if (requests.length === 0) {
+            container.innerHTML = '<div class="empty-state"><p>No loan requests yet</p></div>';
+            return;
+        }
+        
+        const sortedRequests = requests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        
+        container.innerHTML = sortedRequests.map(request => `
+            <div class="request-item">
+                <div class="request-header">
+                    <div class="request-title">$${request.loanAmount} Loan - ${request.repaymentPeriod} months</div>
+                    <div class="request-status status-${request.status.toLowerCase()}">${request.status}</div>
+                </div>
+                <div class="request-details">${request.purpose}</div>
+                <div class="request-meta">
+                    <small><strong>Monthly Payment:</strong> $${(request.loanAmount / request.repaymentPeriod).toFixed(2)}</small>
+                    <small><strong>Submitted:</strong> ${new Date(request.createdAt).toLocaleDateString()}</small>
+                </div>
+                ${request.status === 'PENDING' ? `
+                <div class="request-actions">
+                    <button class="btn btn-danger btn-sm" onclick="deleteRequest('loan', ${request.id})">Delete</button>
+                </div>
+                ` : ''}
+            </div>
+        `).join('');
+    }
+
+    async function handleLeaveRequestSubmit(e) {
+        e.preventDefault();
+        
+        const leaveRequest = {
+            leaveType: document.getElementById('leaveType').value,
+            startDate: document.getElementById('startDate').value,
+            endDate: document.getElementById('endDate').value,
+            totalDays: parseInt(document.getElementById('totalDays').value),
+            reason: document.getElementById('leaveReason').value,
+            status: 'PENDING',
+            user: { id: userData.id }
+        };
+
+        const startDate = new Date(leaveRequest.startDate);
+        const endDate = new Date(leaveRequest.endDate);
+        if (endDate < startDate) {
+            showAlert('End date cannot be before start date', 'error');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/leaveRequest`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    },
+                body: JSON.stringify(leaveRequest)
+            });
+
+            if (!response.ok) {
+                let errorMessage = 'Failed to submit leave request';
+                try {
+                    const errorData = await response.json();
+                    errorMessage = errorData.message || errorMessage;
+                } catch (parseError) {
+                    const errorText = await response.text();
+                    errorMessage = errorText || errorMessage;
+                }
+                throw new Error(errorMessage);
+            }
+
+            const result = await response.json();
+            showAlert('Leave request submitted successfully!', 'success');
+            document.getElementById('leaveRequestForm').reset();
+            setupFormDefaults();
+            await loadLeaveRequests();
+        } catch (error) {
+            console.error('Error submitting leave request:', error);
+            showAlert('Error submitting leave request: ' + error.message, 'error');
+        }
+    }
+
+    async function handleLoanRequestSubmit(e) {
+        e.preventDefault();
+        
+        const loanRequest = {
+            loanAmount: parseFloat(document.getElementById('loanAmount').value),
+            repaymentPeriod: parseInt(document.getElementById('repaymentPeriod').value),
+            purpose: document.getElementById('loanPurpose').value,
+            status: 'PENDING',
+            user: { id: userData.id }
+        };
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/loanRequest`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    },
+                body: JSON.stringify(loanRequest)
+            });
+
+            if (!response.ok) {
+                let errorMessage = 'Failed to submit loan request';
+                try {
+                    const errorData = await response.json();
+                    errorMessage = errorData.message || errorMessage;
+                } catch (parseError) {
+                    const errorText = await response.text();
+                    errorMessage = errorText || errorMessage;
+                }
+                throw new Error(errorMessage);
+            }
+
+            const result = await response.json();
+            showAlert('Loan request submitted successfully!', 'success');
+            document.getElementById('loanRequestForm').reset();
+            await loadLoanRequests();
+        } catch (error) {
+            console.error('Error submitting loan request:', error);
+            showAlert('Error submitting loan request: ' + error.message, 'error');
+        }
+    }
+
+    async function deleteRequest(type, id) {
+        currentDeleteId = id;
+        currentDeleteType = type;
+        document.getElementById('deleteModal').style.display = 'flex';
+    }
+
+    async function confirmDelete() {
+        try {
+            const endpoint = currentDeleteType === 'leave' ? 'leaveRequest' : 'loanRequest';
+            const response = await fetch(`${API_BASE_URL}/${endpoint}/${currentDeleteId}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete request');
+            }
+
+            if (currentDeleteType === 'leave') {
+                await loadLeaveRequests();
+            } else {
+                await loadLoanRequests();
+            }
+            
+            document.getElementById('deleteModal').style.display = 'none';
+            showAlert('Request deleted successfully', 'success');
+        } catch (error) {
+            console.error('Error deleting request:', error);
+            showAlert('Error deleting request', 'error');
+        }
+    }
+
+    function updateStats() {
+        const pendingLeave = leaveRequests.filter(req => req.status === 'PENDING').length;
+        const pendingLoan = loanRequests.filter(req => req.status === 'PENDING').length;
+        const activeLoans = loanRequests.filter(req => req.status === 'APPROVED').length;
+        
+        document.getElementById('pendingRequests').textContent = pendingLeave + pendingLoan;
+        document.getElementById('activeLoans').textContent = activeLoans;
+    }
+
+    function showAlert(message, type) {
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type === 'success' ? 'success' : 'error'}`;
+        alert.textContent = message;
+        
+        const container = document.getElementById('alertContainer');
+        container.appendChild(alert);
+        
+        setTimeout(() => {
+            alert.remove();
+        }, 5000);
+    }
+
+    window.showSection = showSection;
+    window.deleteRequest = deleteRequest;
+    window.clockIn = clockIn;
+    window.clockOut = clockOut;
+</script>
+</body>
+</html>

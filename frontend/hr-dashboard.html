@@ -1,0 +1,2040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Manager Dashboard - Staff Hub</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2c3e50;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+            --light-gray: #f8f9fa;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .dashboard-header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            font-size: 28px;
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .logo h1 {
+            color: var(--primary);
+            font-size: 24px;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-info {
+            color: var(--secondary);
+        }
+        
+        .user-role-badge {
+            background-color: var(--success);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        .dashboard-container {
+            padding: 30px 0;
+        }
+        
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 30px;
+        }
+        
+        .sidebar {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+        
+        .sidebar-menu li a {
+            display: block;
+            padding: 12px 15px;
+            color: var(--secondary);
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar-menu li a:hover, .sidebar-menu li a.active {
+            background-color: var(--light);
+            color: var(--primary);
+        }
+        
+        .main-content {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .content-header {
+            margin-bottom: 25px;
+        }
+        
+        .content-header h2 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        
+        .content-header p {
+            color: var(--gray);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stat-icon {
+            font-size: 40px;
+            margin-right: 15px;
+            color: var(--primary);
+        }
+        
+        .stat-info {
+            flex: 1;
+        }
+        
+        .stat-info h3 {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+        
+        .announcement-item {
+            background-color: var(--light-gray);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .announcement-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .announcement-header h3 {
+            color: var(--secondary);
+        }
+        
+        .announcement-date {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .announcement-content {
+            color: var(--dark);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .announcement-meta {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .announcement-meta small {
+            color: var(--gray);
+            background: rgba(149, 165, 166, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+        
+        .profile-info {
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+            margin-right: 20px;
+        }
+        
+        .profile-details h3 {
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+        
+        .profile-details p {
+            color: var(--gray);
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .info-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid var(--success);
+        }
+        
+        .info-card h4 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        
+        .info-card p {
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        
+        .alert {
+            padding: 12px 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        
+        .alert-success {
+            background-color: rgba(39, 174, 96, 0.1);
+            border: 1px solid rgba(39, 174, 96, 0.3);
+            color: var(--success);
+        }
+        
+        .alert-error {
+            background-color: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: var(--danger);
+        }
+        
+        #alertContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+            max-width: 400px;
+        }
+        
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .action-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            border: 1px solid #e1e8ed;
+            transition: transform 0.2s;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .action-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .action-card h4 {
+            color: var(--secondary);
+            margin-bottom: 5px;
+        }
+        
+        .request-form {
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--secondary);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .requests-list {
+            margin-top: 25px;
+        }
+        
+        .request-item {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .request-title {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        
+        .request-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+        
+        .status-approved {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+        
+        .status-rejected {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+        
+        .request-details {
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+        
+        .request-meta {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        
+        .request-meta small {
+            color: var(--gray);
+        }
+        
+        .request-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+            padding: 30px;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h2 {
+            color: var(--secondary);
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e8ed;
+        }
+        
+        th {
+            background-color: var(--light);
+            color: var(--secondary);
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: rgba(236, 240, 241, 0.5);
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .deleted-user {
+            color: var(--gray);
+            font-style: italic;
+        }
+        
+        /* Attendance specific styles */
+        .attendance-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .summary-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .summary-label {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .attendance-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-present {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+        
+        .status-absent {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+        
+        .status-partial {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning);
+        }
+        
+        .date-filter {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .date-filter label {
+            font-weight: 500;
+            color: var(--secondary);
+        }
+        
+        .department-filter {
+            margin-bottom: 20px;
+        }
+        
+        .attendance-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .attendance-details {
+            margin-top: 20px;
+        }
+        
+        .attendance-details h3 {
+            margin-bottom: 15px;
+            color: var(--secondary);
+        }
+        
+        .attendance-notes {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+        }
+        
+        .refresh-btn {
+            margin-left: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-avatar {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-actions {
+                flex-direction: column;
+            }
+            
+            .date-filter {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .attendance-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body class="dashboard-page">
+    <!-- Header -->
+    <header class="dashboard-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🏢</span>
+                    <h1>Staff Hub Management</h1>
+                </div>
+                <div class="user-menu">
+                    <span class="user-info">Welcome, <strong id="userName">HR Manager</strong></span>
+                    <div class="user-role-badge" id="userRoleBadge">HR Manager</div>
+                    <button class="btn btn-outline" id="logoutBtn">Logout</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <div class="container">
+            <div class="dashboard-content">
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <ul class="sidebar-menu">
+                        <li><a href="#" class="active" data-content="overview">Dashboard Overview</a></li>
+                        <li><a href="#" data-content="users">User Management</a></li>
+                        <li><a href="#" data-content="attendance">Attendance</a></li>
+                        <li><a href="#" data-content="announcements">Announcements</a></li>
+                        <li><a href="#" data-content="leave">Leave Requests</a></li>
+                        <li><a href="#" data-content="loans">Loan Requests</a></li>
+                        <li><a href="#" data-content="profile">My Profile</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Main Content -->
+                <div class="main-content">
+                    <!-- Overview Section -->
+                    <div id="overview-content" class="content-section active">
+                        <div class="content-header">
+                            <h2>HR Manager Dashboard</h2>
+                            <p>Welcome to your HR Management Dashboard</p>
+                        </div>
+                        
+                        <div class="profile-info">
+                            <div class="profile-header">
+                                <div class="profile-avatar" id="userAvatar">H</div>
+                                <div class="profile-details">
+                                    <h3 id="profileName">HR Manager</h3>
+                                    <p id="profileEmail">hr@company.com</p>
+                                    <p id="profileDepartment">Department: Human Resources</p>
+                                    <p id="profileEmployeeId">Employee ID: HR001</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quick-actions">
+                            <div class="action-card" onclick="showSection('users')">
+                                <div class="action-icon">👥</div>
+                                <h4>Manage Users</h4>
+                                <p>View and manage all users</p>
+                            </div>
+                            <div class="action-card" onclick="showSection('attendance')">
+                                <div class="action-icon">📊</div>
+                                <h4>Attendance</h4>
+                                <p>View attendance records</p>
+                            </div>
+                            <div class="action-card" onclick="showSection('announcements')">
+                                <div class="action-icon">📢</div>
+                                <h4>Announcements</h4>
+                                <p>Post company announcements</p>
+                            </div>
+                            <div class="action-card" onclick="showSection('leave')">
+                                <div class="action-icon">📋</div>
+                                <h4>Leave Requests</h4>
+                                <p>Review and approve leave</p>
+                            </div>
+                            <div class="action-card" onclick="showSection('loans')">
+                                <div class="action-icon">💰</div>
+                                <h4>Loan Requests</h4>
+                                <p>Review and approve loans</p>
+                            </div>
+                        </div>
+                        
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">👥</div>
+                                <div class="stat-info">
+                                    <h3>Total Users</h3>
+                                    <div class="stat-value" id="totalUsers">0</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">📊</div>
+                                <div class="stat-info">
+                                    <h3>Present Today</h3>
+                                    <div class="stat-value" id="presentToday">0</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">📋</div>
+                                <div class="stat-info">
+                                    <h3>Pending Leave</h3>
+                                    <div class="stat-value" id="pendingLeave">0</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">💰</div>
+                                <div class="stat-info">
+                                    <h3>Pending Loans</h3>
+                                    <div class="stat-value" id="pendingLoans">0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- User Management Section -->
+                    <div id="users-content" class="content-section">
+                        <div class="content-header">
+                            <h2>User Management</h2>
+                            <p>Manage all users in the system</p>
+                            <button class="btn btn-primary refresh-btn" onclick="loadUsers()">Refresh</button>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table id="usersTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Department</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                    <tr><td colspan="7" class="loading">Loading users...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Attendance Section -->
+                    <div id="attendance-content" class="content-section">
+                        <div class="content-header">
+                            <h2>Attendance Management</h2>
+                            <p>View and manage employee attendance records</p>
+                            <button class="btn btn-primary refresh-btn" onclick="loadAttendance()">Refresh</button>
+                        </div>
+                        
+                        <div class="date-filter">
+                            <div class="form-group">
+                                <label for="attendanceDate">Select Date:</label>
+                                <input type="date" id="attendanceDate" class="form-control" value="">
+                            </div>
+                            <div class="form-group">
+                                <label for="attendanceDepartment">Department:</label>
+                                <select id="attendanceDepartment" class="form-control">
+                                    <option value="">All Departments</option>
+                                    <option value="HR">Human Resources</option>
+                                    <option value="IT">Information Technology</option>
+                                    <option value="FINANCE">Finance</option>
+                                    <option value="MARKETING">Marketing</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="loadAttendance()">Load Attendance</button>
+                        </div>
+                        
+                        <div class="attendance-summary">
+                            <div class="summary-card">
+                                <div class="summary-value" id="totalEmployees">0</div>
+                                <div class="summary-label">Total Employees</div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="summary-value" id="presentCount">0</div>
+                                <div class="summary-label">Present</div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="summary-value" id="absentCount">0</div>
+                                <div class="summary-label">Absent</div>
+                            </div>
+                            <div class="summary-card">
+                                <div class="summary-value" id="partialCount">0</div>
+                                <div class="summary-label">Partial</div>
+                            </div>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table id="attendanceTable">
+                                <thead>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Department</th>
+                                        <th>Clock In</th>
+                                        <th>Clock Out</th>
+                                        <th>Status</th>
+                                        <th>IP Address</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attendanceTableBody">
+                                    <tr><td colspan="7" class="loading">Select a date to load attendance records</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="attendance-details">
+                            <h3>Department Attendance</h3>
+                            <div class="table-container">
+                                <table id="departmentAttendanceTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Department</th>
+                                            <th>Present</th>
+                                            <th>Absent</th>
+                                            <th>Partial</th>
+                                            <th>Attendance Rate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="departmentAttendanceTableBody">
+                                        <tr><td colspan="5" class="loading">Department data will appear here</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Announcements Section -->
+                    <div id="announcements-content" class="content-section">
+                        <div class="content-header">
+                            <h2>Company Announcements</h2>
+                            <p>Create and manage company announcements</p>
+                            <button class="btn btn-primary refresh-btn" onclick="loadAnnouncements()">Refresh</button>
+                        </div>
+                        
+                        <div class="request-form">
+                            <h3>Create New Announcement</h3>
+                            <form id="announcementForm">
+                                <div class="form-group">
+                                    <label for="announcementTitle">Title</label>
+                                    <input type="text" id="announcementTitle" class="form-control" placeholder="Enter announcement title" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="announcementContent">Content</label>
+                                    <textarea id="announcementContent" class="form-control" placeholder="Enter announcement content" required></textarea>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="targetAudience">Target Audience</label>
+                                        <select id="targetAudience" class="form-control" required>
+                                            <option value="">Select Audience</option>
+                                            <option value="ALL">All Staff</option>
+                                            <option value="MANAGEMENT">Management Only</option>
+                                            <option value="STAFF">Staff Only</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="announcementDepartment">Department (Optional)</label>
+                                        <select id="announcementDepartment" class="form-control">
+                                            <option value="">All Departments</option>
+                                            <option value="HR">Human Resources</option>
+                                            <option value="IT">Information Technology</option>
+                                            <option value="FINANCE">Finance</option>
+                                            <option value="MARKETING">Marketing</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Post Announcement</button>
+                            </form>
+                        </div>
+                        
+                        <div class="requests-list">
+                            <h3>Existing Announcements</h3>
+                            <div id="announcementsList">
+                                <div class="empty-state">
+                                    <p>Loading announcements...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Leave Requests Section -->
+                    <div id="leave-content" class="content-section">
+                        <div class="content-header">
+                            <h2>Leave Requests</h2>
+                            <p>Review and manage all leave requests</p>
+                            <button class="btn btn-primary refresh-btn" onclick="loadLeaveRequests()">Refresh</button>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table id="leaveRequestsTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Employee</th>
+                                        <th>Type</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Days</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="leaveRequestsTableBody">
+                                    <tr><td colspan="8" class="loading">Loading leave requests...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Loan Requests Section -->
+                    <div id="loans-content" class="content-section">
+                        <div class="content-header">
+                            <h2>Loan Requests</h2>
+                            <p>Review and manage all loan requests</p>
+                            <button class="btn btn-primary refresh-btn" onclick="loadLoanRequests()">Refresh</button>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table id="loanRequestsTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Employee</th>
+                                        <th>Amount</th>
+                                        <th>Repayment Period</th>
+                                        <th>Purpose</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="loanRequestsTableBody">
+                                    <tr><td colspan="7" class="loading">Loading loan requests...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Profile Section -->
+                    <div id="profile-content" class="content-section">
+                        <div class="content-header">
+                            <h2>My Profile</h2>
+                            <p>View and manage your personal information</p>
+                        </div>
+                        
+                        <div class="profile-info">
+                            <div class="profile-header">
+                                <div class="profile-avatar" id="profileAvatar">H</div>
+                                <div class="profile-details">
+                                    <h3 id="profileFullName">HR Manager</h3>
+                                    <p id="profileEmailFull">hr@company.com</p>
+                                    <p id="profileRole">Role: HR Manager</p>
+                                </div>
+                            </div>
+                            
+                            <div class="info-grid">
+                                <div class="info-card">
+                                    <h4>Personal Information</h4>
+                                    <p><strong>Employee ID:</strong> <span id="profileEmpId">HR001</span></p>
+                                    <p><strong>Department:</strong> <span id="profileDept">Human Resources</span></p>
+                                    <p><strong>Manager:</strong> <span id="profileManager">N/A</span></p>
+                                    <p><strong>Hire Date:</strong> <span id="profileHireDate">N/A</span></p>
+                                </div>
+                                
+                                <div class="info-card">
+                                    <h4>Contact Information</h4>
+                                    <p><strong>Phone:</strong> <span id="profilePhone">N/A</span></p>
+                                    <p><strong>Email:</strong> <span id="profileContactEmail">hr@company.com</span></p>
+                                    <p><strong>Address:</strong> <span id="profileAddress">N/A</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Container -->
+    <div id="alertContainer"></div>
+
+    <script>
+        // API Configuration
+        const API_BASE_URL = 'http://localhost:8080/api';
+        
+        // Global variables
+        let userData = null;
+        let announcements = [];
+        let leaveRequests = [];
+        let loanRequests = [];
+        let users = [];
+        let attendanceRecords = [];
+        
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // For demo purposes, create mock user data if not in localStorage
+            userData = JSON.parse(localStorage.getItem('user'));
+            if (!userData) {
+                // Create mock HR user for demo
+                userData = {
+                    userId: 1,
+                    firstName: 'HR',
+                    lastName: 'Manager',
+                    email: 'hr@company.com',
+                    role: 'HR_MANAGER',
+                    department: {
+                        id: 1,
+                        departmentName: 'Human Resources'
+                    },
+                    employeeId: 'HR001',
+                    phoneNumber: '+1234567890',
+                    address: '123 Company St, City, State',
+                    hireDate: '2023-01-15'
+                };
+                localStorage.setItem('user', JSON.stringify(userData));
+            }
+
+            initializeUserData();
+            setupEventListeners();
+            
+            // Set default date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('attendanceDate').value = today;
+            
+            // Load initial data
+            loadUsers();
+            loadAnnouncements();
+            loadLeaveRequests();
+            loadLoanRequests();
+            loadAttendance();
+        });
+
+        function initializeUserData() {
+            document.getElementById('userName').textContent = userData.firstName + ' ' + userData.lastName;
+            document.getElementById('userRoleBadge').textContent = userData.role;
+            
+            document.getElementById('profileName').textContent = userData.firstName + ' ' + userData.lastName;
+            document.getElementById('profileEmail').textContent = userData.email;
+            document.getElementById('profileDepartment').textContent = 'Department: ' + (userData.department ? userData.department.departmentName : 'Human Resources');
+            document.getElementById('profileEmployeeId').textContent = 'Employee ID: ' + (userData.employeeId || 'HR001');
+            
+            const avatar = document.getElementById('userAvatar');
+            const profileAvatar = document.getElementById('profileAvatar');
+            const initials = (userData.firstName.charAt(0) + userData.lastName.charAt(0)).toUpperCase();
+            avatar.textContent = initials;
+            profileAvatar.textContent = initials;
+            
+            document.getElementById('profileFullName').textContent = userData.firstName + ' ' + userData.lastName;
+            document.getElementById('profileEmailFull').textContent = userData.email;
+            document.getElementById('profileRole').textContent = 'Role: ' + userData.role;
+            document.getElementById('profileEmpId').textContent = userData.employeeId || 'HR001';
+            document.getElementById('profileDept').textContent = userData.department ? userData.department.departmentName : 'Human Resources';
+            document.getElementById('profileManager').textContent = userData.manager ? userData.manager.firstName + ' ' + userData.manager.lastName : 'N/A';
+            document.getElementById('profileHireDate').textContent = userData.hireDate ? new Date(userData.hireDate).toLocaleDateString() : 'N/A';
+            document.getElementById('profilePhone').textContent = userData.phoneNumber || 'N/A';
+            document.getElementById('profileContactEmail').textContent = userData.email;
+            document.getElementById('profileAddress').textContent = userData.address || 'N/A';
+        }
+
+        function setupEventListeners() {
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            
+            document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showSection(this.getAttribute('data-content'));
+                });
+            });
+
+            document.getElementById('announcementForm').addEventListener('submit', handleAnnouncementSubmit);
+        }
+
+        function showSection(sectionName) {
+            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+            document.querySelector(`[data-content="${sectionName}"]`).classList.add('active');
+            
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionName + '-content').classList.add('active');
+            
+            // Refresh data when switching to specific sections
+            if (sectionName === 'users') {
+                loadUsers();
+            } else if (sectionName === 'attendance') {
+                loadAttendance();
+            } else if (sectionName === 'leave') {
+                loadLeaveRequests();
+            } else if (sectionName === 'loans') {
+                loadLoanRequests();
+            } else if (sectionName === 'announcements') {
+                loadAnnouncements();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
+        }
+
+        // API call handler
+        async function handleApiCall(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                if (!response.ok) {
+                    let errorMessage = `HTTP error! status: ${response.status}`;
+                    try {
+                        const errorData = await response.json();
+                        errorMessage = errorData.message || errorMessage;
+                    } catch {
+                        const errorText = await response.text();
+                        errorMessage = errorText || errorMessage;
+                    }
+                    throw new Error(errorMessage);
+                }
+                
+                // Check if response has content
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    return await response.json();
+                } else {
+                    // Return text response for non-JSON responses
+                    const text = await response.text();
+                    return text || { success: true };
+                }
+                
+            } catch (error) {
+                console.error('API call failed:', error);
+                throw error;
+            }
+        }
+
+        async function loadUsers() {
+            try {
+                document.getElementById('usersTableBody').innerHTML = '<tr><td colspan="7" class="loading">Loading users...</td></tr>';
+                
+                // For demo, create mock users if API fails
+                try {
+                    users = await handleApiCall(`${API_BASE_URL}/users`);
+                } catch (error) {
+                    console.warn('Using mock users data');
+                    users = getMockUsers();
+                }
+                
+                displayUsers(users);
+                document.getElementById('totalUsers').textContent = users.length;
+                
+            } catch (error) {
+                console.error('Error loading users:', error);
+                showAlert(`Error loading users: ${error.message}`, 'error');
+                document.getElementById('usersTableBody').innerHTML = 
+                    '<tr><td colspan="7" style="text-align: center; color: var(--danger);">Error loading users: ' + error.message + '</td></tr>';
+            }
+        }
+
+        function displayUsers(users) {
+            const container = document.getElementById('usersTableBody');
+            
+            if (!users || users.length === 0) {
+                container.innerHTML = '<tr><td colspan="7" style="text-align: center;">No users found</td></tr>';
+                return;
+            }
+            
+            // Show only active users
+            const activeUsers = users.filter(user => !user.isDeleted);
+            
+            if (activeUsers.length === 0) {
+                container.innerHTML = '<tr><td colspan="7" style="text-align: center;">No active users found</td></tr>';
+                return;
+            }
+            
+            container.innerHTML = activeUsers.map(user => `
+                <tr>
+                    <td>${user.userId || user.id || 'N/A'}</td>
+                    <td>${user.firstName} ${user.lastName}</td>
+                    <td>${user.email}</td>
+                    <td>${user.role}</td>
+                    <td>${user.department ? user.department.departmentName : 'N/A'}</td>
+                    <td>ACTIVE</td>
+                    <td class="user-actions">
+                        <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.userId || user.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function deleteUser(userId) {
+            if (!confirm('Are you sure you want to delete this user? This will also remove all their associated data.')) return;
+            
+            try {
+                await handleApiCall(`${API_BASE_URL}/users/${userId}`, {
+                    method: 'DELETE'
+                });
+                
+                showAlert('User deleted successfully', 'success');
+                loadUsers(); // Refresh the user list
+                
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                showAlert(`Error deleting user: ${error.message}`, 'error');
+            }
+        }
+
+        // Attendance Management Functions
+        async function loadAttendance() {
+            const date = document.getElementById('attendanceDate').value;
+            const department = document.getElementById('attendanceDepartment').value;
+            
+            if (!date) {
+                showAlert('Please select a date', 'error');
+                return;
+            }
+            
+            try {
+                document.getElementById('attendanceTableBody').innerHTML = '<tr><td colspan="7" class="loading">Loading attendance records...</td></tr>';
+                
+                // Get all attendance records first
+                let allAttendance = [];
+                try {
+                    allAttendance = await handleApiCall(`${API_BASE_URL}/attendance/all`);
+                } catch (error) {
+                    console.warn('Using mock attendance data');
+                    allAttendance = getMockAttendance();
+                }
+                
+                // Filter by date
+                const selectedDate = new Date(date);
+                attendanceRecords = allAttendance.filter(record => {
+                    if (!record.attendanceDate) return false;
+                    const recordDate = new Date(record.attendanceDate);
+                    return recordDate.toDateString() === selectedDate.toDateString();
+                });
+                
+                // Filter by department if selected
+                if (department) {
+                    attendanceRecords = attendanceRecords.filter(record => 
+                        record.user && record.user.department && 
+                        record.user.department.departmentName === department
+                    );
+                }
+                
+                displayAttendance(attendanceRecords);
+                updateAttendanceSummary(attendanceRecords);
+                loadDepartmentAttendance(date);
+                
+            } catch (error) {
+                console.error('Error loading attendance:', error);
+                showAlert(`Error loading attendance: ${error.message}`, 'error');
+                document.getElementById('attendanceTableBody').innerHTML = 
+                    '<tr><td colspan="7" style="text-align: center; color: var(--danger);">Error loading attendance: ' + error.message + '</td></tr>';
+            }
+        }
+
+        function displayAttendance(records) {
+            const container = document.getElementById('attendanceTableBody');
+            
+            if (!records || records.length === 0) {
+                container.innerHTML = '<tr><td colspan="7" style="text-align: center;">No attendance records found for selected date</td></tr>';
+                return;
+            }
+            
+            container.innerHTML = records.map(record => {
+                const user = record.user || {};
+                const clockInTime = record.clockInTIme ? new Date(record.clockInTIme).toLocaleTimeString() : 'Not clocked in';
+                const clockOutTime = record.clockOutTIme ? new Date(record.clockOutTIme).toLocaleTimeString() : 'Not clocked out';
+                
+                // Determine status
+                let status = 'Absent';
+                let statusClass = 'status-absent';
+                
+                if (record.clockInTIme && record.clockOutTIme) {
+                    status = 'Present';
+                    statusClass = 'status-present';
+                } else if (record.clockInTIme && !record.clockOutTIme) {
+                    status = 'Partial';
+                    statusClass = 'status-partial';
+                }
+                
+                return `
+                    <tr>
+                        <td>${user.firstName} ${user.lastName}</td>
+                        <td>${user.department ? user.department.departmentName : 'N/A'}</td>
+                        <td>${clockInTime}</td>
+                        <td>${clockOutTime}</td>
+                        <td><span class="attendance-status ${statusClass}">${status}</span></td>
+                        <td>${record.ipAddress || 'N/A'}</td>
+                        <td>${record.notes || ''} <span class="attendance-notes">${record.notes ? '(HR Notes)' : ''}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateAttendanceSummary(records) {
+            const totalEmployees = users.filter(user => !user.isDeleted).length;
+            const presentCount = records.filter(record => 
+                record.clockInTIme && record.clockOutTIme
+            ).length;
+            const partialCount = records.filter(record => 
+                record.clockInTIme && !record.clockOutTIme
+            ).length;
+            const absentCount = totalEmployees - (presentCount + partialCount);
+            
+            document.getElementById('totalEmployees').textContent = totalEmployees;
+            document.getElementById('presentCount').textContent = presentCount;
+            document.getElementById('partialCount').textContent = partialCount;
+            document.getElementById('absentCount').textContent = absentCount;
+            
+            // Update the overview stats
+            document.getElementById('presentToday').textContent = presentCount + partialCount;
+        }
+
+        async function loadDepartmentAttendance(date) {
+            try {
+                // Get all departments from users
+                const departments = [...new Set(users
+                    .filter(user => !user.isDeleted && user.department)
+                    .map(user => user.department.departmentName)
+                )];
+                
+                let departmentStats = [];
+                
+                // Calculate attendance for each department
+                for (const dept of departments) {
+                    const deptUsers = users.filter(user => 
+                        !user.isDeleted && 
+                        user.department && 
+                        user.department.departmentName === dept
+                    );
+                    
+                    // Filter attendance records for this department and date
+                    const deptAttendance = attendanceRecords.filter(record => 
+                        record.user && 
+                        record.user.department && 
+                        record.user.department.departmentName === dept
+                    );
+                    
+                    const presentCount = deptAttendance.filter(record => 
+                        record.clockInTIme && record.clockOutTIme
+                    ).length;
+                    
+                    const partialCount = deptAttendance.filter(record => 
+                        record.clockInTIme && !record.clockOutTIme
+                    ).length;
+                    
+                    const absentCount = deptUsers.length - (presentCount + partialCount);
+                    const attendanceRate = deptUsers.length > 0 ? 
+                        Math.round(((presentCount + partialCount) / deptUsers.length) * 100) : 0;
+                    
+                    departmentStats.push({
+                        department: dept,
+                        present: presentCount,
+                        partial: partialCount,
+                        absent: absentCount,
+                        rate: attendanceRate
+                    });
+                }
+                
+                displayDepartmentAttendance(departmentStats);
+                
+            } catch (error) {
+                console.error('Error loading department attendance:', error);
+            }
+        }
+
+        function displayDepartmentAttendance(stats) {
+            const container = document.getElementById('departmentAttendanceTableBody');
+            
+            if (!stats || stats.length === 0) {
+                container.innerHTML = '<tr><td colspan="5" style="text-align: center;">No department data available</td></tr>';
+                return;
+            }
+            
+            container.innerHTML = stats.map(stat => `
+                <tr>
+                    <td>${stat.department}</td>
+                    <td>${stat.present}</td>
+                    <td>${stat.absent}</td>
+                    <td>${stat.partial}</td>
+                    <td>${stat.rate}%</td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadAnnouncements() {
+            try {
+                // For demo, create mock announcements if API fails
+                try {
+                    announcements = await handleApiCall(`${API_BASE_URL}/announcement`);
+                } catch (error) {
+                    console.warn('Using mock announcements data');
+                    announcements = getMockAnnouncements();
+                }
+                
+                displayAnnouncements(announcements);
+                
+            } catch (error) {
+                console.error('Error loading announcements:', error);
+                document.getElementById('announcementsList').innerHTML = 
+                    '<div class="empty-state"><p>Error loading announcements: ' + error.message + '</p></div>';
+            }
+        }
+
+        function displayAnnouncements(announcements) {
+            const container = document.getElementById('announcementsList');
+            
+            if (!announcements || announcements.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No announcements found</p></div>';
+                return;
+            }
+            
+            const sortedAnnouncements = announcements.sort((a, b) => new Date(b.createdAt || b.startDate) - new Date(a.createdAt || a.startDate));
+            
+            container.innerHTML = sortedAnnouncements.map(announcement => `
+                <div class="announcement-item">
+                    <div class="announcement-header">
+                        <h3>${announcement.title || 'No Title'}</h3>
+                        <span class="announcement-date">${new Date(announcement.createdAt || announcement.startDate).toLocaleDateString()}</span>
+                    </div>
+                    <div class="announcement-content">
+                        ${announcement.content || 'No content available.'}
+                    </div>
+                    <div class="announcement-meta">
+                        <small><strong>Posted by:</strong> ${announcement.postedBy ? announcement.postedBy.firstName + ' ' + announcement.postedBy.lastName : 'Administration'}</small>
+                        ${announcement.department ? `<small><strong>Department:</strong> ${announcement.department.departmentName}</small>` : ''}
+                        ${announcement.targetAudience ? `<small><strong>Audience:</strong> ${announcement.targetAudience}</small>` : ''}
+                    </div>
+                    <div class="request-actions">
+                        <button class="btn btn-danger btn-sm" onclick="deleteAnnouncement(${announcement.announcementId || announcement.id})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function handleAnnouncementSubmit(e) {
+            e.preventDefault();
+            
+            const formData = {
+                title: document.getElementById('announcementTitle').value,
+                content: document.getElementById('announcementContent').value,
+                targetAudience: document.getElementById('targetAudience').value,
+                department: document.getElementById('announcementDepartment').value || null,
+                postedBy: userData,
+                startDate: new Date().toISOString(),
+                endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
+                isActive: true
+            };
+
+            try {
+                // For demo, just add to local array if API fails
+                try {
+                    const newAnnouncement = await handleApiCall(`${API_BASE_URL}/announcement`, {
+                        method: 'POST',
+                        body: JSON.stringify(formData)
+                    });
+                    announcements.push(newAnnouncement);
+                } catch (error) {
+                    console.warn('Adding announcement locally');
+                    formData.id = Date.now();
+                    formData.createdAt = new Date().toISOString();
+                    announcements.push(formData);
+                }
+                
+                displayAnnouncements(announcements);
+                document.getElementById('announcementForm').reset();
+                showAlert('Announcement posted successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error creating announcement:', error);
+                showAlert(`Error creating announcement: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteAnnouncement(announcementId) {
+            if (!confirm('Are you sure you want to delete this announcement?')) return;
+            
+            try {
+                await handleApiCall(`${API_BASE_URL}/announcement/${announcementId}`, {
+                    method: 'DELETE'
+                });
+                
+                announcements = announcements.filter(a => (a.announcementId || a.id) !== announcementId);
+                displayAnnouncements(announcements);
+                showAlert('Announcement deleted successfully', 'success');
+                
+            } catch (error) {
+                console.error('Error deleting announcement:', error);
+                showAlert(`Error deleting announcement: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadLeaveRequests() {
+            try {
+                // For demo, create mock leave requests if API fails
+                try {
+                    leaveRequests = await handleApiCall(`${API_BASE_URL}/leaveRequest`);
+                } catch (error) {
+                    console.warn('Using mock leave requests data');
+                    leaveRequests = getMockLeaveRequests();
+                }
+                
+                displayLeaveRequests(leaveRequests);
+                
+                const pendingCount = leaveRequests.filter(req => req.status === 'PENDING').length;
+                document.getElementById('pendingLeave').textContent = pendingCount;
+                
+            } catch (error) {
+                console.error('Error loading leave requests:', error);
+                showAlert(`Error loading leave requests: ${error.message}`, 'error');
+                document.getElementById('leaveRequestsTableBody').innerHTML = 
+                    '<tr><td colspan="8" style="text-align: center; color: var(--danger);">Error loading leave requests: ' + error.message + '</td></tr>';
+            }
+        }
+
+        function displayLeaveRequests(requests) {
+            const container = document.getElementById('leaveRequestsTableBody');
+            
+            if (!requests || requests.length === 0) {
+                container.innerHTML = '<tr><td colspan="8" style="text-align: center;">No leave requests found</td></tr>';
+                return;
+            }
+            
+            // Filter to show only requests from active users
+            const activeUserRequests = requests.filter(request => 
+                request.user && !request.user.isDeleted
+            );
+            
+            if (activeUserRequests.length === 0) {
+                container.innerHTML = '<tr><td colspan="8" style="text-align: center;">No leave requests from active users</td></tr>';
+                return;
+            }
+            
+            const sortedRequests = activeUserRequests.sort((a, b) => new Date(b.createdAt || b.startDate) - new Date(a.createdAt || a.startDate));
+            
+            container.innerHTML = sortedRequests.map(request => `
+                <tr>
+                    <td>${request.leaveId || request.id || 'N/A'}</td>
+                    <td>${request.user.firstName} ${request.user.lastName}</td>
+                    <td>${request.leaveType}</td>
+                    <td>${new Date(request.startDate).toLocaleDateString()}</td>
+                    <td>${new Date(request.endDate).toLocaleDateString()}</td>
+                    <td>${request.totalDays || 'N/A'}</td>
+                    <td><span class="request-status status-${request.status.toLowerCase()}">${request.status}</span></td>
+                    <td class="user-actions">
+                        ${request.status === 'PENDING' ? `
+                            <button class="btn btn-success btn-sm" onclick="approveLeave(${request.leaveId || request.id})">Approve</button>
+                            <button class="btn btn-danger btn-sm" onclick="rejectLeave(${request.leaveId || request.id})">Reject</button>
+                        ` : ''}
+                        <button class="btn btn-danger btn-sm" onclick="deleteLeaveRequest(${request.leaveId || request.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function approveLeave(leaveId) {
+            try {
+                await handleApiCall(`${API_BASE_URL}/leaveRequest/${leaveId}/approve/hr`, {
+                    method: 'PUT',
+                    body: JSON.stringify(userData)
+                });
+                
+                showAlert('Leave request approved', 'success');
+                loadLeaveRequests(); // Refresh the list
+                
+            } catch (error) {
+                console.error('Error approving leave:', error);
+                showAlert(`Error approving leave request: ${error.message}`, 'error');
+            }
+        }
+
+        async function rejectLeave(leaveId) {
+            try {
+                await handleApiCall(`${API_BASE_URL}/leaveRequest/${leaveId}/reject`, {
+                    method: 'PUT',
+                    body: JSON.stringify(userData)
+                });
+                
+                showAlert('Leave request rejected', 'success');
+                loadLeaveRequests(); // Refresh the list
+                
+            } catch (error) {
+                console.error('Error rejecting leave:', error);
+                showAlert(`Error rejecting leave request: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteLeaveRequest(leaveId) {
+            if (!confirm('Are you sure you want to delete this leave request?')) return;
+            
+            try {
+                await handleApiCall(`${API_BASE_URL}/leaveRequest/${leaveId}`, {
+                    method: 'DELETE'
+                });
+                
+                showAlert('Leave request deleted successfully', 'success');
+                loadLeaveRequests(); // Refresh the list
+                
+            } catch (error) {
+                console.error('Error deleting leave request:', error);
+                showAlert(`Error deleting leave request: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadLoanRequests() {
+            try {
+                // For demo, create mock loan requests if API fails
+                try {
+                    loanRequests = await handleApiCall(`${API_BASE_URL}/loanRequest`);
+                } catch (error) {
+                    console.warn('Using mock loan requests data');
+                    loanRequests = getMockLoanRequests();
+                }
+                
+                displayLoanRequests(loanRequests);
+                
+                const pendingCount = loanRequests.filter(req => req.status === 'PENDING').length;
+                document.getElementById('pendingLoans').textContent = pendingCount;
+                
+            } catch (error) {
+                console.error('Error loading loan requests:', error);
+                showAlert(`Error loading loan requests: ${error.message}`, 'error');
+                document.getElementById('loanRequestsTableBody').innerHTML = 
+                    '<tr><td colspan="7" style="text-align: center; color: var(--danger);">Error loading loan requests: ' + error.message + '</td></tr>';
+            }
+        }
+
+        function displayLoanRequests(requests) {
+            const container = document.getElementById('loanRequestsTableBody');
+            
+            if (!requests || requests.length === 0) {
+                container.innerHTML = '<tr><td colspan="7" style="text-align: center;">No loan requests found</td></tr>';
+                return;
+            }
+            
+            // Filter to show only requests from active users
+            const activeUserRequests = requests.filter(request => 
+                request.user && !request.user.isDeleted
+            );
+            
+            if (activeUserRequests.length === 0) {
+                container.innerHTML = '<tr><td colspan="7" style="text-align: center;">No loan requests from active users</td></tr>';
+                return;
+            }
+            
+            const sortedRequests = activeUserRequests.sort((a, b) => new Date(b.createdAt || b.applicationDate) - new Date(a.createdAt || a.applicationDate));
+            
+            container.innerHTML = sortedRequests.map(request => `
+                <tr>
+                    <td>${request.loanId || request.id || 'N/A'}</td>
+                    <td>${request.user.firstName} ${request.user.lastName}</td>
+                    <td>$${request.loanAmount || 'N/A'}</td>
+                    <td>${request.repaymentPeriod || 'N/A'} months</td>
+                    <td>${request.purpose || 'N/A'}</td>
+                    <td><span class="request-status status-${request.status.toLowerCase()}">${request.status}</span></td>
+                    <td class="user-actions">
+                        ${request.status === 'PENDING' ? `
+                            <button class="btn btn-success btn-sm" onclick="approveLoan(${request.loanId || request.id})">Approve</button>
+                            <button class="btn btn-danger btn-sm" onclick="rejectLoan(${request.loanId || request.id})">Reject</button>
+                        ` : ''}
+                        <button class="btn btn-danger btn-sm" onclick="deleteLoanRequest(${request.loanId || request.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function approveLoan(loanId) {
+            try {
+                await handleApiCall(`${API_BASE_URL}/loanRequest/${loanId}/approve`, {
+                    method: 'PUT',
+                    body: JSON.stringify(userData)
+                });
+                
+                showAlert('Loan request approved', 'success');
+                loadLoanRequests(); // Refresh the list
+                
+            } catch (error) {
+                console.error('Error approving loan:', error);
+                showAlert(`Error approving loan request: ${error.message}`, 'error');
+            }
+        }
+
+        async function rejectLoan(loanId) {
+            try {
+                await handleApiCall(`${API_BASE_URL}/loanRequest/${loanId}/reject`, {
+                    method: 'PUT',
+                    body: JSON.stringify(userData)
+                });
+                
+                showAlert('Loan request rejected', 'success');
+                loadLoanRequests(); // Refresh the list
+                
+            } catch (error) {
+                console.error('Error rejecting loan:', error);
+                showAlert(`Error rejecting loan request: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteLoanRequest(loanId) {
+            if (!confirm('Are you sure you want to delete this loan request?')) return;
+            
+            try {
+                await handleApiCall(`${API_BASE_URL}/loanRequest/${loanId}`, {
+                    method: 'DELETE'
+                });
+                
+                showAlert('Loan request deleted successfully', 'success');
+                loadLoanRequests(); // Refresh the list
+                
+            } catch (error) {
+                console.error('Error deleting loan request:', error);
+                showAlert(`Error deleting loan request: ${error.message}`, 'error');
+            }
+        }
+
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            
+            const container = document.getElementById('alertContainer');
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        // Mock data functions for demo purposes
+        function getMockUsers() {
+            return [
+                {
+                    userId: 1,
+                    firstName: 'John',
+                    lastName: 'Doe',
+                    email: 'john.doe@company.com',
+                    role: 'EMPLOYEE',
+                    department: { departmentName: 'IT' },
+                    employeeId: 'EMP001',
+                    isDeleted: false
+                },
+                {
+                    userId: 2,
+                    firstName: 'Jane',
+                    lastName: 'Smith',
+                    email: 'jane.smith@company.com',
+                    role: 'MANAGER',
+                    department: { departmentName: 'HR' },
+                    employeeId: 'EMP002',
+                    isDeleted: false
+                },
+                {
+                    userId: 3,
+                    firstName: 'Mike',
+                    lastName: 'Johnson',
+                    email: 'mike.johnson@company.com',
+                    role: 'EMPLOYEE',
+                    department: { departmentName: 'FINANCE' },
+                    employeeId: 'EMP003',
+                    isDeleted: false
+                },
+                {
+                    userId: 4,
+                    firstName: 'Sarah',
+                    lastName: 'Williams',
+                    email: 'sarah.williams@company.com',
+                    role: 'EMPLOYEE',
+                    department: { departmentName: 'MARKETING' },
+                    employeeId: 'EMP004',
+                    isDeleted: false
+                }
+            ];
+        }
+
+        function getMockAttendance() {
+            const today = new Date();
+            return [
+                {
+                    id: 1,
+                    user: { firstName: 'John', lastName: 'Doe', department: { departmentName: 'IT' } },
+                    attendanceDate: today.toISOString().split('T')[0],
+                    clockInTIme: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8, 30).toISOString(),
+                    clockOutTIme: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 17, 0).toISOString(),
+                    ipAddress: '192.168.100.101',
+                    notes: 'On time'
+                },
+                {
+                    id: 2,
+                    user: { firstName: 'Jane', lastName: 'Smith', department: { departmentName: 'HR' } },
+                    attendanceDate: today.toISOString().split('T')[0],
+                    clockInTIme: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 9, 15).toISOString(),
+                    clockOutTIme: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 17, 30).toISOString(),
+                    ipAddress: '192.168.100.102',
+                    notes: 'Late arrival'
+                },
+                {
+                    id: 3,
+                    user: { firstName: 'Mike', lastName: 'Johnson', department: { departmentName: 'FINANCE' } },
+                    attendanceDate: today.toISOString().split('T')[0],
+                    clockInTIme: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 8, 45).toISOString(),
+                    clockOutTIme: null,
+                    ipAddress: '192.168.100.103',
+                    notes: 'Still working'
+                }
+            ];
+        }
+
+        function getMockAnnouncements() {
+            return [
+                {
+                    id: 1,
+                    title: 'Company Meeting',
+                    content: 'There will be a company-wide meeting this Friday at 2 PM in the main conference room.',
+                    targetAudience: 'ALL',
+                    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+                    postedBy: { firstName: 'HR', lastName: 'Manager' }
+                },
+                {
+                    id: 2,
+                    title: 'IT System Maintenance',
+                    content: 'The IT systems will undergo maintenance this weekend. Please save all your work before leaving on Friday.',
+                    targetAudience: 'ALL',
+                    department: { departmentName: 'IT' },
+                    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+                    postedBy: { firstName: 'IT', lastName: 'Department' }
+                }
+            ];
+        }
+
+        function getMockLeaveRequests() {
+            return [
+                {
+                    leaveId: 1,
+                    user: { firstName: 'John', lastName: 'Doe', isDeleted: false },
+                    leaveType: 'VACATION',
+                    startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+                    endDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+                    totalDays: 7,
+                    status: 'PENDING',
+                    createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    leaveId: 2,
+                    user: { firstName: 'Sarah', lastName: 'Williams', isDeleted: false },
+                    leaveType: 'SICK',
+                    startDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+                    endDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+                    totalDays: 2,
+                    status: 'APPROVED',
+                    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
+                }
+            ];
+        }
+
+        function getMockLoanRequests() {
+            return [
+                {
+                    loanId: 1,
+                    user: { firstName: 'Mike', lastName: 'Johnson', isDeleted: false },
+                    loanAmount: 5000,
+                    repaymentPeriod: 12,
+                    purpose: 'Home renovation',
+                    status: 'PENDING',
+                    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+                },
+                {
+                    loanId: 2,
+                    user: { firstName: 'Jane', lastName: 'Smith', isDeleted: false },
+                    loanAmount: 2000,
+                    repaymentPeriod: 6,
+                    purpose: 'Emergency expenses',
+                    status: 'APPROVED',
+                    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
+                }
+            ];
+        }
+
+        // Make functions globally available
+        window.showSection = showSection;
+        window.deleteUser = deleteUser;
+        window.deleteAnnouncement = deleteAnnouncement;
+        window.approveLeave = approveLeave;
+        window.rejectLeave = rejectLeave;
+        window.deleteLeaveRequest = deleteLeaveRequest;
+        window.approveLoan = approveLoan;
+        window.rejectLoan = rejectLoan;
+        window.deleteLoanRequest = deleteLoanRequest;
+        window.loadAttendance = loadAttendance;
+    </script>
+</body>
+</html>
